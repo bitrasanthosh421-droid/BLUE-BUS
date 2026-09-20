@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLUEBUS - Online Bus Ticket Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #0b0d11;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #11141a;
+            border-bottom: 1px solid #222733;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ff007a, #7928ca, #0070f3, #00dfd8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        header p {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            font-weight: 300;
+            color: #ffffff;
+            opacity: 0.85;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .booking-card {
+            background: #151821;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #252a38;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+            color: #ffffff;
+        }
+
+        .form-group input {
+            padding: 0.75rem 0.9rem;
+            background: #1e222d;
+            border: 1px solid #333a4d;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #ffffff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input::placeholder {
+            color: #6c788d;
+        }
+
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .form-group input:focus {
+            border-color: #0070f3;
+            box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.25);
+        }
+
+        .search-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #0070f3, #7928ca);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .search-btn:hover {
+            opacity: 0.9;
+        }
+
+        .search-btn:active {
+            transform: scale(0.99);
+        }
+
+        .results-section {
+            margin-top: 2rem;
+        }
+
+        .results-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .bus-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .bus-card {
+            background: #151821;
+            padding: 1.25rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #252a38;
+            border-left: 5px solid #00dfd8;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .bus-details h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .bus-details p {
+            font-size: 0.85rem;
+            color: #b0b8c6;
+            margin-top: 0.25rem;
+        }
+
+        .bus-timing {
+            text-align: right;
+        }
+
+        .bus-timing .time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .bus-timing .fare {
+            font-size: 0.95rem;
+            color: #00dfd8;
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .bus-timing {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>BLUEBUS</h1>
+        <p>Reliable and comfortable bus journeys across your favorite routes</p>
+    </header>
+
+    <main>
+        <section class="booking-card">
+            <form id="search-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="from-city">From</label>
+                        <input type="text" id="from-city" placeholder="Enter starting city" list="cities" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="to-city">To</label>
+                        <input type="text" id="to-city" placeholder="Enter destination city" list="cities" required autocomplete="off">
+                    </div>
+
+                    <datalist id="cities">
+                        <option value="Chirala">
+                        <option value="Vijayawada">
+                        <option value="Mangalagiri">
+                        <option value="Hyderabad">
+                    </datalist>
+
+                    <div class="form-group">
+                        <label for="travel-date">Date of Journey</label>
+                        <input type="date" id="travel-date" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="search-btn">Search Buses</button>
+            </form>
+        </section>
+
+        <section class="results-section" id="results-container"></section>
+    </main>
+
+    <script>
+        const busRoutesData = {
+            "chirala-mangalagiri": [
+                { name: "APSRTC Express", time: "04:20 AM - 06:40 AM", fare: "₹180" },
+                { name: "Vennela Travels AC Sleeper", time: "08:00 AM - 10:30 AM", fare: "₹250" },
+                { name: "Yolo Bus AC Sleeper", time: "03:45 PM - 06:00 PM", fare: "₹300" }
+            ],
+            "vijayawada-mangalagiri": [
+                { name: "APSRTC City Bus", time: "06:00 AM - 06:30 AM", fare: "₹30" },
+                { name: "APSRTC Metro Express", time: "09:15 AM - 09:45 AM", fare: "₹35" },
+                { name: "APSRTC City Bus", time: "02:30 PM - 03:00 PM", fare: "₹30" },
+                { name: "APSRTC Vennela AC", time: "07:00 PM - 07:30 PM", fare: "₹50" }
+            ]
+        };
+
+        const form = document.getElementById('search-form');
+        const resultsContainer = document.getElementById('results-container');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const fromRaw = document.getElementById('from-city').value.trim();
+            const toRaw = document.getElementById('to-city').value.trim();
+            const date = document.getElementById('travel-date').value;
+
+            const routeKey = `${fromRaw.toLowerCase()}-${toRaw.toLowerCase()}`;
+
+            const availableBuses = busRoutesData[routeKey] || [
+                { name: "Bluebus Standard Express", time: "07:00 AM - 11:30 AM", fare: "₹350" },
+                { name: "Bluebus Multi-Axle AC Sleeper", time: "02:15 PM - 07:00 PM", fare: "₹650" },
+                { name: "Bluebus Night Rider Luxury", time: "09:30 PM - 02:00 AM", fare: "₹550" }
+            ];
+
+            let cardsHtml = `
+                <h2 class="results-title">Available Buses for ${fromRaw} to ${toRaw} (${date})</h2>
+                <div class="bus-list">
+            `;
+
+            availableBuses.forEach(bus => {
+                cardsHtml += `
+                    <div class="bus-card">
+                        <div class="bus-details">
+                            <h3>${bus.name}</h3>
+                            <p>Route: ${fromRaw} &rarr; ${toRaw}</p>
+                        </div>
+                        <div class="bus-timing">
+                            <div class="time">${bus.time}</div>
+                            <div class="fare">${bus.fare}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cardsHtml += `</div>`;
+            resultsContainer.innerHTML = cardsHtml;
+        });
+    </script>
+</body>
+</html>
+
